@@ -1,0 +1,29 @@
+/* UserTable.css */
+
+
+
+/* UserForm.css */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  backdrop-filter: blur(5px);
+background-color: rgba(0, 0, 0, 0.341);
+  
+}
+
+
+.container h2 {
+    color:rgb(226, 254, 255);
+    text-align: center;
+    background: rgb(0, 24, 46);
+    padding: 20px;
+   border: 1px solid rgb(0, 73, 134);
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+  margin: 20px ;
+  border-radius: 15px;
+  max-width: 97%;
+}
+

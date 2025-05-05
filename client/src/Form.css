@@ -1,0 +1,258 @@
+/* General form styling */
+.form-contain {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #00223a;
+    border-radius: 8px;
+  
+    font-family: Arial, sans-serif;
+   border: 1px solid  #004475e3;
+    
+}
+
+.form-contain h2 {
+    color:rgb(226, 254, 255);
+    text-align: center;
+    backdrop-filter: blur(5px);
+    padding: 20px;
+    border: 1px solid rgb(0, 69, 125);
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+  margin: 20px ;
+  border-radius: 15px;
+
+}
+
+form h3 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    color: #fef7f7;
+}
+
+/* Form input and label styling */
+form label {
+
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.form-contain input,
+ select {
+    width: 100%;
+    padding: 15px; /* Increased padding for consistent height */
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    height: 50px; /* Set height for equal size */
+}
+
+.form-contain input[type="text"]:read-only,
+.form-contain input[type="number"]:read-only {
+    background-color: #e9ecef;
+    color: #000000;
+}
+.total-container input,.total-container select{
+
+    color: #000000;
+    width: 87% ;
+    margin-left: 14px;
+    max-height: 9dvh;
+}
+.total-container label{
+   
+    margin: auto;
+    
+}
+.total-container select{
+   
+   margin-bottom: 15px; 
+}
+
+.form-contain select {
+    background-color: #fff;
+    color: #000000;
+    height: 50px; /* Ensure select dropdown matches the input height */
+}
+
+.form-contain button {
+    width: 100%;
+    padding: 15px;
+    
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    transition:  0.3s;
+    height: 50px; /* Set height to match other fields */
+    align-self: center;
+    background-color: #003a03;
+    border: #4CAF50 1px solid;
+}
+.form-contain button:hover{
+    background-color: #01b80a;
+    border: #005303 1px solid;
+
+}
+#pop{
+    background: #002d61;
+    color: #ddd;
+    padding: 10px;
+    border-radius: 15px;
+    position: relative;
+}
+form button:hover {
+    background-color: #45a049;
+}
+
+/* Styling for the search bar */
+.form-contain div label {
+    margin-top: 15px;
+  
+    color: #ffffff;
+
+}
+
+.form-contain input[type="text"] {
+    margin-bottom: 20px;
+}
+
+/* Styling for the search results */
+ul {
+    list-style-type: none;
+   
+    margin: auto;
+    background-color: #fff;
+    
+    border-radius: 4px;
+    max-height: 150px;
+    overflow-y: auto;
+    width: 50%;
+    margin-bottom: 17px;
+    text-align: center;
+    border: 1px solid;
+}
+
+
+ul li {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #000000;
+}
+
+ul li:last-child {
+    border-bottom: none;
+}
+
+ul li:hover {
+    background-color: #002184;
+}
+
+/* Display added items */
+.form-contain div {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 10px; /* Added gap for consistent spacing */
+}
+
+
+
+/* Total items, grand total, and amount paid container */
+.total-container {
+    display: flex;
+   margin-bottom: 20px;
+    gap: 10px;
+   background: #002943e6;
+    border-radius: 10px;
+    
+}
+
+.total-container div {
+    flex:1;
+    display: flex;
+   
+}
+
+/* Adjusting input alignment */
+.form-contain input[type="number"] {
+    text-align: right;
+}
+
+.total-container2 {
+    display: flex; /* Use flexbox for horizontal alignment */
+    align-items: center; /* Align items vertically centered */
+    gap: 10px; /* Space between each field */
+    margin-bottom: 15px;
+    background: #002942e6;
+    color: #ddd;
+    
+    border-radius: 10px;
+    padding-top: 20px;
+    padding-left: 15px;
+} 
+
+/* Styles for input fields inside the item row */
+.total-container2 input[type="text"],
+.total-container2 input[type="number"] {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    height: 40px; /* Set a consistent height for all fields */
+    box-sizing: border-box;
+    
+}
+
+.total-container2 label{
+  margin: auto;
+}
+/* Style the labels within the item container */
+
+
+/* Button styles for Remove Item */
+.total-container2 button {
+    width: 7%;
+    margin-bottom: 15px;
+    margin-right: 10px ;
+    padding: 10px 15px;
+    background-color: #000000;
+    color: white;
+    border: solid 1px rgb(0, 73, 97);
+    border-radius: 15px;
+    cursor: pointer;
+    ;
+    height: 41px; /* Match height with input fields */
+    
+    flex-shrink: 0; /* Ensure button does not shrink */
+}
+#bbb{
+    width: 30%;
+  
+    padding: 10px 15px;
+    background-color: #000000;
+    color: white;
+    border: solid 1px rgb(255, 255, 255);
+    border-radius: 10px;
+    cursor: pointer;
+
+
+    
+    height: 41px; /* Match height with input fields */
+    
+    flex-shrink: 0; /* Ensure button does not shrink */
+}
+
+
+.total-container2 button:hover {
+    background-color: #dc0000;
+}
+
+.ii{
+    margin-left: 20px;
+    max-width: 40%;
+  
+
+   
+}

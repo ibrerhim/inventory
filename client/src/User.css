@@ -1,0 +1,34 @@
+
+#ik {
+    color:rgb(226, 254, 255);
+    text-align: center;
+    backdrop-filter: blur(50px);
+    padding: 20px;
+    box-shadow: 0 0 10px rgb(0, 44, 94);
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    max-width:97%;
+    margin: 30px auto;
+    border-radius: 15px;
+  border: 1px solid rgb(0, 72, 128);
+}
+.dts{
+    margin-left: 20px;
+   
+}
+#prft{
+    color:rgb(226, 254, 255);
+    text-align: center;
+ 
+    padding: 10px;
+    box-shadow: 0 0 10px rgb(0, 44, 94);
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    max-width:30%;
+    margin-left: 15px ;
+    border-radius: 15px;
+  border: 1px solid rgb(0, 72, 128);
+}
+.custom-row-hover:hover {
+    background-color: #004367 !important;
+    color: white;
+    transition: background-color 0.3s ease;
+}
