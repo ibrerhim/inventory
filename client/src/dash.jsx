@@ -1,19 +1,16 @@
-import React from 'react'
 import Card from './card'
 import SlideNavbar from './SlideInNavbar'
-import Logout from './Logout'
 
 function Dash() {
-  return (
-    <>
-    <SlideNavbar />
-    <div className="content">
-      
-      <Card/>
-    </div>
-    </>
 
- )
+  return (
+    <div className="flex h-screen ">
+      <SlideNavbar />
+      <main className={`flex-1 overflow-auto transition-all duration-300 ml-20 lg:ml-64`}>
+        <Card />
+      </main>
+    </div>
+  )
 }
 
 export default Dash

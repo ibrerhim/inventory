@@ -1,16 +1,23 @@
-import React, { useState, useEffect } from "react";
-import DataTable from "react-data-table-component";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import swal from "sweetalert";
-import { Plus, Edit, Trash } from "lucide-react"; // Import Lucide icons
+import { Plus, Edit, Trash } from "lucide-react";
 import SlideNavbar from "./SlideInNavbar";
-import Modal from "react-modal"; // Import modal library
-import "./UserTable.css";
-import "./UserForm.css";
+import { DataTable } from "./components/ui/data-table";
+import { Button } from "./components/ui/button";
+import { Input } from "./components/ui/input";
+import { Card, CardContent } from "./components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter
+} from "./components/ui/dialog";
 
 const ProductTable = () => {
   const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [currentProduct, setCurrentProduct] = useState(null);
   const [formData, setFormData] = useState({
@@ -24,14 +31,14 @@ const ProductTable = () => {
 
   // Fetch products from the backend
   const fetchProducts = async () => {
-    setLoading(true);
+    setIsLoading(true);
     try {
       const response = await axios.get("http://localhost:3000/api/products"); // Adjust the endpoint as per your server setup
       setProducts(response.data);
     } catch (error) {
       console.error("Error fetching products", error);
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -97,7 +104,8 @@ const ProductTable = () => {
         swal("Success!", "Product added successfully.", "success");
       }
       fetchProducts(); // Refresh the product list after addition/update
-    } catch (error) {
+    } catch (err) {
+      console.error("Error saving product:", err);
       swal("Oh noes!", "Failed to save product!", "error");
     } finally {
       setModalIsOpen(false);
@@ -111,209 +119,187 @@ const ProductTable = () => {
   // Columns for DataTable
   const columns = [
     {
-      name: "Name",
-      selector: (row) => row.name,
-      sortable: true,
+      key: "name",
+      header: "Name",
+      cell: (row) => <div className="font-medium">{row.name}</div>,
     },
     {
-      name: "Price",
-      selector: (row) => row.price,
-      sortable: true,
+      key: "price",
+      header: "Price",
+      cell: (row) => <div>${row.price}</div>,
     },
     {
-      name: "Quantity",
-      selector: (row) => row.quantity,
-      sortable: true,
+      key: "quantity",
+      header: "Quantity",
+      cell: (row) => <div>{row.quantity}</div>,
     },
     {
-      name: "Supplier",
-      selector: (row) => row.supplier,
-      sortable: true,
+      key: "supplier",
+      header: "Supplier",
+      cell: (row) => <div>{row.supplier}</div>,
     },
     {
-      name: "Actions",
+      key: "actions",
+      header: "Actions",
       cell: (row) => (
-        <div style={{ background:'transparent', display: "flex", gap: "10px" }}>
-          <button onClick={() => openModal(row)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
-            <Edit color="blue" size={16} />
-          </button>
-          <button onClick={() => deleteProduct(row._id)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
-            <Trash color="red" size={16} />
-          </button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => openModal(row)}
+            className="h-8 w-8 text-blue-500 hover:text-blue-700 hover:bg-blue-100/20"
+          >
+            <Edit size={16} />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => deleteProduct(row._id)}
+            className="h-8 w-8 text-red-500 hover:text-red-700 hover:bg-red-100/20"
+          >
+            <Trash size={16} />
+          </Button>
         </div>
       ),
     },
   ];
-  const customStyles = {
-    table: {
-      style: {
-        fontFamily: "Verdana, Geneva, Tahoma, sans-serif",
-        margin: "20px auto",
-        padding: "20px",
-        borderRadius: "15px",
-        textAlign: "center",
-        backgroundColor: "#00223a",
-        color: "blue",
-        border: "1px solid #003482",
-        width: "1000px",
-         justifyContent: "center",
-      },
-    },
-    pagination: {
-      style: {
-        backgroundColor: "transparent",
-        color: "white",
-      },
-    },
-    headRow: {
-      style: {
-        borderRadius: "10px",
-        fontFamily: "Verdana, Geneva, Tahoma, sans-serif",
-        margin: "20px auto",
-        padding: "0px",
-        // justifyContent: "center",
-        // textAlign: "center",
-        backgroundColor: "#001021",
-        color: "azure",
-        borderLeft: "1px solid #0056b3",
-        // border: "1px solid #003482",
-        borderRight: "1px solid #0056b3",
-        textAlign: "center",
-      },
-    },
-    rows: {
-      style: {
-      
-        padding: "5px",
-        borderRadius: "10px",
-        backgroundColor: "#001021",
-        color: "azure",
-        border: "1px solid #0056b3",
-      },
-    },
-  headCells: {
-      style: {
-        
-         justifyContent: "center",
-         textAlign: "center",
-       
-      },
-    },
-    cells: {
-      style: {
-        margin: " auto",
-        padding: "10px",
-        // borderRadius: "15px",
-        // textAlign: "center",
-        justifyContent: "center",
-        color: "azure",
-        borderRight: "1px solid #0056b3",
-      },
-    },
-  };
   return (
-    <div className="container">
-        <SlideNavbar />
-      <div className="content">
-        <h2 className="ii">Product List</h2>
-        <button className="b" onClick={() => openModal()}>
-          <Plus size={16} /> Add New Product
-        </button>
-        <DataTable
-          columns={columns}
-          data={products}
-          progressPending={loading}
-          pagination
-          persistTableHead
-          customStyles={customStyles}
-        />
+    <div className="flex h-screen ">
+      <SlideNavbar />
+      <main className="flex-1 overflow-auto transition-all duration-300 ml-20 lg:ml-64 p-6">
+        <div className="flex flex-col gap-6">
+          <div className="flex items-center justify-between">
+            <h1 className="text-3xl font-bold">Products</h1>
+            <Button onClick={() => openModal()} className="flex items-center gap-2">
+              <Plus size={16} /> Add New Product
+            </Button>
+          </div>
 
-        {/* Modal for adding/updating product */}
+          <Card className="border-border/40 bg-card/30 backdrop-blur-sm">
+            <CardContent className="p-0">
+              <DataTable
+                columns={columns}
+                data={products}
+                title="Product List"
+                searchPlaceholder="Search products..."
+                searchField="name"
+                loading={isLoading}
+              />
+            </CardContent>
+          </Card>
+        </div>
 
-        <Modal
-          className="form-container"
-          overlayClassName="modal-overlay" 
-          isOpen={modalIsOpen}
-          onRequestClose={() => setModalIsOpen(false)}
-          contentLabel="Product Form"
-        >
-          <h2>{currentProduct ? "Edit Product" : "Add New Product"}</h2>
-          <form onSubmit={handleSubmit} className="user-form">
-            <div className="form-group">
-              <label>
-                Name:
-                <input
-                  type="text"
-                  value={formData.name}
-                  onChange={(e) =>
-                    setFormData({ ...formData, name: e.target.value })
-                  }
-                  required
-                />
-              </label>
-              <label>
-                Price:
-                <input
-                  type="number"
-                  value={formData.price}
-                  onChange={(e) => {
-                    const newPrice = e.target.value;
-                    setFormData({ ...formData, price: newPrice });
-                    calculateProfit(newPrice, formData.purchaseprice); // Calculate profit
-                  }}
-                  required
-                />
-              </label>
-              <label>
-                Purchase Price:
-                <input
-                  type="number"
-                  value={formData.purchaseprice}
-                  onChange={(e) => {
-                    const newPurchasePrice = e.target.value;
-                    setFormData({
-                      ...formData,
-                      purchaseprice: newPurchasePrice,
-                    });
-                    calculateProfit(formData.price, newPurchasePrice); // Calculate profit
-                  }}
-                  required
-                />
-              </label>
-              <label>
-                Profit:
-                <input type="number" value={formData.profit} readOnly />
-              </label>
-              <label>
-                Quantity:
-                <input
-                  type="number"
-                  value={formData.quantity}
-                  onChange={(e) =>
-                    setFormData({ ...formData, quantity: e.target.value })
-                  }
-                  required
-                />
-              </label>
-              <label>
-                Supplier:
-                <input
-                  type="text"
-                  value={formData.supplier}
-                  onChange={(e) =>
-                    setFormData({ ...formData, supplier: e.target.value })
-                  }
-                />
-              </label>
+        {/* Dialog for adding/updating product */}
+        <Dialog open={modalIsOpen} onOpenChange={setModalIsOpen}>
+          <DialogContent className="sm:max-w-[500px]">
+            <DialogHeader>
+              <DialogTitle>{currentProduct ? "Edit Product" : "Add New Product"}</DialogTitle>
+            </DialogHeader>
 
-              <button type="submit">
-                {currentProduct ? "Update" : "Add"} Product
-              </button>
-            </div>
-          </form>
-          <button onClick={() => setModalIsOpen(false)}>Close</button>
-        </Modal>
-      </div>
+            <form onSubmit={handleSubmit} className="space-y-4 py-4">
+              <div className="grid gap-4">
+                <div className="grid gap-2">
+                  <label htmlFor="name" className="text-sm font-medium">
+                    Name
+                  </label>
+                  <Input
+                    id="name"
+                    type="text"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    required
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="grid gap-2">
+                    <label htmlFor="price" className="text-sm font-medium">
+                      Price
+                    </label>
+                    <Input
+                      id="price"
+                      type="number"
+                      value={formData.price}
+                      onChange={(e) => {
+                        const newPrice = e.target.value;
+                        setFormData({ ...formData, price: newPrice });
+                        calculateProfit(newPrice, formData.purchaseprice);
+                      }}
+                      required
+                    />
+                  </div>
+
+                  <div className="grid gap-2">
+                    <label htmlFor="purchaseprice" className="text-sm font-medium">
+                      Purchase Price
+                    </label>
+                    <Input
+                      id="purchaseprice"
+                      type="number"
+                      value={formData.purchaseprice}
+                      onChange={(e) => {
+                        const newPurchasePrice = e.target.value;
+                        setFormData({ ...formData, purchaseprice: newPurchasePrice });
+                        calculateProfit(formData.price, newPurchasePrice);
+                      }}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="grid gap-2">
+                    <label htmlFor="profit" className="text-sm font-medium">
+                      Profit
+                    </label>
+                    <Input
+                      id="profit"
+                      type="number"
+                      value={formData.profit}
+                      readOnly
+                      className="bg-muted/50"
+                    />
+                  </div>
+
+                  <div className="grid gap-2">
+                    <label htmlFor="quantity" className="text-sm font-medium">
+                      Quantity
+                    </label>
+                    <Input
+                      id="quantity"
+                      type="number"
+                      value={formData.quantity}
+                      onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="grid gap-2">
+                  <label htmlFor="supplier" className="text-sm font-medium">
+                    Supplier
+                  </label>
+                  <Input
+                    id="supplier"
+                    type="text"
+                    value={formData.supplier}
+                    onChange={(e) => setFormData({ ...formData, supplier: e.target.value })}
+                  />
+                </div>
+              </div>
+
+              <DialogFooter>
+                <Button type="button" variant="outline" onClick={() => setModalIsOpen(false)}>
+                  Cancel
+                </Button>
+                <Button type="submit">
+                  {currentProduct ? "Update" : "Add"} Product
+                </Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
+      </main>
     </div>
   );
 };

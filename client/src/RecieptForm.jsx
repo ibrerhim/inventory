@@ -1,10 +1,30 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import swal from 'sweetalert';
-import "./Form.css";
 import SlideNavbar from './SlideInNavbar';
-import { Plus, Edit, Trash } from "lucide-react";
+import {
+  Plus,
+  Trash,
+  Search,
+  ShoppingCart,
+  User,
+  CreditCard,
+  DollarSign,
+  Receipt,
+  Tag
+} from "lucide-react";
+import { Button } from './components/ui/button';
+import { Input } from './components/ui/input';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from './components/ui/card';
+import { Label } from './components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from './components/ui/select';
 
 const RecieptForm = () => {
     const navigate = useNavigate();
@@ -62,15 +82,15 @@ const RecieptForm = () => {
             swal("Out of Stock", "This product is currently out of stock and cannot be added.", "warning");
             return; // Exit the function if the product is out of stock
         }
-    
+
         // Check if the product is already in the items list
         const existingItemIndex = items.findIndex(item => item.productId === selectedProduct._id);
-    
+
         if (existingItemIndex !== -1) {
             // If the product is already in the list, increase its quantity by 1
             const updatedItems = [...items];
             const existingItem = updatedItems[existingItemIndex];
-    
+
             // Ensure the new quantity does not exceed the product's max quantity
             if (existingItem.quantity < selectedProduct.quantity) {
                 existingItem.quantity += 1;
@@ -80,7 +100,7 @@ const RecieptForm = () => {
                 swal("Max Quantity Reached", "You have reached the maximum available quantity for this product.", "warning");
                 return;
             }
-    
+
             setItems(updatedItems);
             calculateTotals(updatedItems);
         } else {
@@ -95,18 +115,18 @@ const RecieptForm = () => {
                 profit: selectedProduct.profit,
                 maxQuantity: selectedProduct.quantity // Store the max quantity available
             };
-    
+
             const updatedItems = [...items, newItem];
             setItems(updatedItems);
             calculateTotals(updatedItems);
         }
-    
+
         // Clear search term and filtered results
         setSearchTerm('');
         setFilteredProducts([]);
     };
-    
-    
+
+
     const handleItemChange = (index, field, value) => {
         const updatedItems = [...items];
         if (field === 'price' || field === 'quantity') {
@@ -161,125 +181,256 @@ const RecieptForm = () => {
             navigate("/reciept-table", { state: formData });
         }
     };
-    
+
 
     return (
-        <div>
+        <div className="flex h-screen">
             <SlideNavbar />
-            <div className='content'>
-                <form className='form-contain'>
-                    <h2>Generate Receipt</h2>
-                    <div className='total-container'>
-                        <div>
-                            <label>Sale ID:</label>
-                            <input type="text" value={saleid || ''} readOnly />
-                        </div>
-                        <div>
-                            <label>Salesperson:</label>
-                            <input
-                                type="text"
-                                value={salesperson}
-                                onChange={(e) => setSalesperson(e.target.value)}
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label>Customer Name:</label>
-                            <input
-                                type="text"
-                                value={customerName}
-                                onChange={(e) => setCustomerName(e.target.value)}
-                            />
-                        </div>
+            <main className="flex-1 overflow-auto transition-all duration-300 ml-20 lg:ml-64 p-6">
+                <div className="flex flex-col gap-6">
+                    <div className="flex items-center justify-between">
+                        <h1 className="text-3xl font-bold">Generate Receipt</h1>
                     </div>
-                    <h2>Items</h2>
-                    <div className='ii'>
-                        <label>Add Product:</label>
-                        <input
-                            type="text"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            placeholder="Type to search..."
-                        />
-                    </div>
-                    {filteredProducts.length > 0 && (
-                        <ul className='ww' >
-                            {filteredProducts.map((product) => (
-                                <li key={product._id} onClick={() => handleAddItem(product)}>
-                                   {product.name}_____price:${product.price}______instock:{product.quantity}
-                                </li>
-                            ))}
-                        </ul>
-                    )}
-                    {items.length > 0 && (
-                        <>
-                            {items.map((item, index) => (
-                                <div key={index} className="total-container2">
-                                    <label>Product:</label>
-                                    <input type="text" value={item.product} readOnly />
-                                    <label>Price:</label>
-                                    <input type="number" value={item.price} readOnly />
-                                    <label>Quantity:</label>
-                                    <input
-                                        type="number"
-                                        value={item.quantity}
-                                        onChange={(e) => handleItemChange(index, 'quantity', e.target.value)}
-                                        max={item.maxQuantity} 
-                                        min={0}// Set max attribute here
-                                        required
-                                    />
-                                    <label>Total:</label>
-                                    <input type="number" value={item.totalprice} readOnly />
-                                    
-                                    <button type="button" onClick={() => handleRemoveItem(index)}>
-                                        <Trash size={16} />
-                                    </button>
+
+                    <Card className="border-2 border-blue-950 bg-card/30 backdrop-blur-lg ">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <Receipt className="h-5 w-5" />
+                                Receipt Information
+                            </CardTitle>
+                            <CardDescription>Enter the receipt details</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <form className="space-y-6">
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div className="space-y-2">
+                                        <Label htmlFor="saleId">Sale ID</Label>
+                                        <div className="relative">
+                                            <Tag className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                                            <Input
+                                                id="saleId"
+                                                value={saleid || ''}
+                                                readOnly
+                                                className="pl-8 bg-muted/50"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <Label htmlFor="salesperson">Salesperson</Label>
+                                        <div className="relative">
+                                            <User className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                                            <Input
+                                                id="salesperson"
+                                                value={salesperson}
+                                                onChange={(e) => setSalesperson(e.target.value)}
+                                                className="pl-8 bg-muted/50"
+                                                required
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <Label htmlFor="customerName">Customer Name</Label>
+                                        <div className="relative">
+                                            <User className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                                            <Input
+                                                id="customerName"
+                                                value={customerName}
+                                                onChange={(e) => setCustomerName(e.target.value)}
+                                                className="pl-8 bg-muted/50"
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
-                            ))}
-                            <div className="total-container">
-                                <div>
-                                    <label>Total Items:</label>
-                                    <input type="number" value={totalItems} readOnly />
+
+                                <div className="space-y-4">
+                                    <div className="flex items-center justify-between">
+                                        <h3 className="text-lg font-medium">Items</h3>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <Label htmlFor="searchProduct">Add Product</Label>
+                                        <div className="relative">
+                                            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                                            <Input
+                                                id="searchProduct"
+                                                type="text"
+                                                value={searchTerm}
+                                                onChange={(e) => setSearchTerm(e.target.value)}
+                                                placeholder="Type to search products..."
+                                                className="pl-8 bg-muted/50"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    {filteredProducts.length > 0 && (
+                                        <Card className="border-border/40">
+                                            <CardContent className="p-0">
+                                                <ul className="divide-y divide-border/40">
+                                                    {filteredProducts.map((product) => (
+                                                        <li
+                                                            key={product._id}
+                                                            onClick={() => handleAddItem(product)}
+                                                            className="p-3 flex justify-between items-center hover:bg-muted/50 cursor-pointer transition-colors"
+                                                        >
+                                                            <div className="flex items-center gap-2">
+                                                                <ShoppingCart className="h-4 w-4 text-muted-foreground" />
+                                                                <span className="font-medium">{product.name}</span>
+                                                            </div>
+                                                            <div className="flex items-center gap-4 text-sm">
+                                                                <span className="text-green-500">${product.price}</span>
+                                                                <span className="text-muted-foreground">In stock: {product.quantity}</span>
+                                                                <Plus className="h-4 w-4" />
+                                                            </div>
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </CardContent>
+                                        </Card>
+                                    )}
+
+                                    {items.length > 0 && (
+                                        <div className="space-y-4">
+                                            <div className="rounded-md border border-border/40 overflow-hidden">
+                                                <table className="w-full">
+                                                    <thead className="bg-muted/50">
+                                                        <tr>
+                                                            <th className="p-2 text-left font-medium text-muted-foreground">Product</th>
+                                                            <th className="p-2 text-left font-medium text-muted-foreground">Price</th>
+                                                            <th className="p-2 text-left font-medium text-muted-foreground">Quantity</th>
+                                                            <th className="p-2 text-left font-medium text-muted-foreground">Total</th>
+                                                            <th className="p-2 text-left font-medium text-muted-foreground">Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody className="divide-y divide-border/40">
+                                                        {items.map((item, index) => (
+                                                            <tr key={index} className="hover:bg-muted/30">
+                                                                <td className="p-2">{item.product}</td>
+                                                                <td className="p-2">${item.price}</td>
+                                                                <td className="p-2">
+                                                                    <Input
+                                                                        type="number"
+                                                                        value={item.quantity}
+                                                                        onChange={(e) => handleItemChange(index, 'quantity', e.target.value)}
+                                                                        max={item.maxQuantity}
+                                                                        min={0}
+                                                                        required
+                                                                        className="w-20 h-8"
+                                                                    />
+                                                                </td>
+                                                                <td className="p-2 font-medium">${item.totalprice.toFixed(2)}</td>
+                                                                <td className="p-2">
+                                                                    <Button
+                                                                        variant="ghost"
+                                                                        size="icon"
+                                                                        onClick={() => handleRemoveItem(index)}
+                                                                        className="h-8 w-8 text-red-500 hover:text-red-700 hover:bg-red-100/20"
+                                                                    >
+                                                                        <Trash size={16} />
+                                                                    </Button>
+                                                                </td>
+                                                            </tr>
+                                                        ))}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                <Card className="border-border/40">
+                                                    <CardHeader className="pb-2">
+                                                        <CardTitle className="text-base">Order Summary</CardTitle>
+                                                    </CardHeader>
+                                                    <CardContent>
+                                                        <div className="space-y-2">
+                                                            <div className="flex justify-between">
+                                                                <span className="text-muted-foreground">Total Items:</span>
+                                                                <span className="font-medium">{totalItems}</span>
+                                                            </div>
+                                                            <div className="flex justify-between">
+                                                                <span className="text-muted-foreground">Grand Total:</span>
+                                                                <span className="font-medium text-green-500">${grandTotal.toFixed(2)}</span>
+                                                            </div>
+                                                        </div>
+                                                    </CardContent>
+                                                </Card>
+
+                                                <Card className="border-border/40">
+                                                    <CardHeader className="pb-2">
+                                                        <CardTitle className="text-base">Payment Details</CardTitle>
+                                                    </CardHeader>
+                                                    <CardContent>
+                                                        <div className="space-y-4">
+                                                            <div className="space-y-2">
+                                                                <Label htmlFor="amountPaid">Amount Paid</Label>
+                                                                <div className="relative">
+                                                                    <DollarSign className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                                                                    <Input
+                                                                        id="amountPaid"
+                                                                        type="number"
+                                                                        value={amountPaid}
+                                                                        onChange={(e) => {
+                                                                            setAmountPaid(parseFloat(e.target.value));
+                                                                            setBalance(grandTotal - parseFloat(e.target.value));
+                                                                        }}
+                                                                        className="pl-8"
+                                                                    />
+                                                                </div>
+                                                            </div>
+
+                                                            <div className="space-y-2">
+                                                                <Label htmlFor="balance">Balance</Label>
+                                                                <div className="relative">
+                                                                    <DollarSign className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                                                                    <Input
+                                                                        id="balance"
+                                                                        type="number"
+                                                                        value={balance}
+                                                                        readOnly
+                                                                        className="pl-8 bg-muted/50"
+                                                                    />
+                                                                </div>
+                                                            </div>
+
+                                                            <div className="space-y-2">
+                                                                <Label htmlFor="paymentMethod">Payment Method</Label>
+                                                                <Select
+                                                                    value={paymentMethod}
+                                                                    onValueChange={(value) => setPaymentMethod(value)}
+                                                                >
+                                                                    <SelectTrigger id="paymentMethod" className="w-full">
+                                                                        <SelectValue placeholder="Select payment method" />
+                                                                    </SelectTrigger>
+                                                                    <SelectContent>
+                                                                        <SelectItem value="Cash">Cash</SelectItem>
+                                                                        <SelectItem value="Card">Card</SelectItem>
+                                                                        <SelectItem value="Bank Transfer">Bank Transfer</SelectItem>
+                                                                    </SelectContent>
+                                                                </Select>
+                                                            </div>
+                                                        </div>
+                                                    </CardContent>
+                                                </Card>
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
-                                <div>
-                                    <label>Grand Total:</label>
-                                    <input type="number" value={grandTotal} readOnly />
-                                </div>
-                                
-                                <div>
-                                    <label>Amount Paid:</label>
-                                    <input
-                                        type="number"
-                                        value={amountPaid}
-                                        onChange={(e) => {
-                                            setAmountPaid(parseFloat(e.target.value));
-                                            setBalance(grandTotal - parseFloat(e.target.value));
-                                        }}
-                                    />
-                                </div>
-                                <div>
-                                    <label>Balance:</label>
-                                    <input type="number" value={balance} readOnly />
-                                </div>
-                                <div>
-                                    <label>Payment Method:</label>
-                                    <select
-                                        value={paymentMethod}
-                                        onChange={(e) => setPaymentMethod(e.target.value)}
-                                        required
+
+                                <div className="flex justify-end">
+                                    <Button
+                                        type="button"
+                                        onClick={handleGenerateReceipt}
+                                        className="flex items-center gap-2"
                                     >
-                                        <option value=""></option>
-                                        <option value="Cash">Cash</option>
-                                        <option value="Card">Card</option>
-                                        <option value="Bank Transfer">Bank Transfer</option>
-                                    </select>
+                                        <Receipt className="h-4 w-4" />
+                                        Generate Receipt
+                                    </Button>
                                 </div>
-                            </div>
-                        </>
-                    )}
-                    <button type="button" onClick={handleGenerateReceipt}>Generate Receipt</button>
-                </form>
-            </div>
+                            </form>
+                        </CardContent>
+                    </Card>
+                </div>
+            </main>
         </div>
     );
 };
